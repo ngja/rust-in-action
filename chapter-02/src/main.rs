@@ -1,3 +1,5 @@
+use num::Complex;
+
 fn main() {
     // example 2.2
     let a = 10; // 데이터 타입 컴파일러 추론, 변수는 기본 불변 (읽기 전용)
@@ -35,6 +37,86 @@ fn main() {
     println!("base  2: {:b} {:b} {:b}", three, thirty, three_hundred);
     println!("base  8: {:o} {:o} {:o}", three, thirty, three_hundred);
     println!("base 16: {:x} {:x} {:x}", three, thirty, three_hundred);
+
+    let t1: i32 = 10;
+    let t2: u16 = 100;
+
+    if t1 < (t2 as i32) { // 서로 다른 타입은 as 연산으로 변환해야한다. 작은 타입을 큰 타입으로 변환하는게 안전
+        println!("Ten is less than one hundred.");
+    }
+
+    let t2_ = t2.try_into() // i32 타입으로 감싸 반환
+        .unwrap(); // 변환 성공하면 i32로 반환, 실패하면 프로그램 중단
+
+    if t1 < t2_ {
+        println!("Ten is less than one hundred.");
+    }
+
+    let complex1 = Complex { re: 2.1, im: -1.3 };
+    let complex2 = Complex::new(11.1, 22.2);
+    let result = complex1 + complex2;
+
+    println!("{} + {}i", result.re, result.im);
+
+    // while true {} 대신 loop {}
+
+    'outer: for x in 0.. { // 중첩 반복문 break
+        for y in 0.. {
+            for z in 0.. {
+                if x + y + z > 1000 {
+                    break 'outer;
+                }
+            }
+        }
+    }
+
+    let item = 10;
+    match item {
+        0 => {}, // 0
+        10 ..= 20 => {}, // 10 <= <= 20
+        40 | 80 => {}, // 40 or 80
+        _ => {}, // 나머지
+    }
+
+    let haystack = [1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862];
+
+    for item in &haystack {
+        let result = match item {
+            42 | 132 => "hit!",
+            _ => "miss",
+        };
+
+        if result == "hit!" {
+            println!("{}: {}", item, result);
+        }
+    }
+
+    let num1 = 42;
+    let num1_ref = &num1;
+    let sum = num1 + *num1_ref;
+
+    println!("num1 + num1 = {}", sum);
+
+    // array
+    let arr1 = [1, 2, 3];
+    let arr2: [u8; 3] = [1, 2, 3];
+    let arr3 = [0; 3];
+    let arr4: [u8; 3] = [0; 3];
+
+    let arrays = [arr1, arr2, arr3, arr4];
+
+    for arr in &arrays {
+        print!("{:?}: ", arr);
+        for n in arr.iter() {
+            print!("\t{} + 10 = {}", n, n+10);
+        }
+
+        let mut sum = 0;
+        for i in 0..arr.len() {
+            sum += arr[i];
+        }
+        println!("\t({:?} = {})", arr, sum);
+    }
 }
 
 fn add(i: i32, j: i32) -> i32 { // 함수 정의 시 타입 반드시 필요
